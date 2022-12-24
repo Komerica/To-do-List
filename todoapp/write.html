@@ -30,20 +30,21 @@
         </ul>
     </div>
 </nav>
-<form>
+<!--POST = 글쓰기(write)-->
+<form action="/newpost" method="POST">  <!--꼭 있어야하는 2개 속성! action + method 있어야 서버로 정보를 전달 가능!-->
     <div class="form-group mt-3">
         <div class="col-3">
-            <label for="formGroupExampleInput">To-do</label>
-            <input type="text" class="form-control" id="formGroupExampleInput" placeholder="To-do">
+            <label for="toDo">To-do</label>
+            <input type="text" class="form-control" id="toDo" name="toDo" placeholder="Enter your to-do">   <!--🟧 3. input 안에 name 을 적어주자-->
         </div>
     </div>
     <div class="form-group">
         <div class="col-3">
-            <label for="formGroupExampleInput2">Due Date</label>
-            <input type="date" class="form-control" id="formGroupExampleInput2">
+            <label for="dueDate">Due Date</label>
+            <input type="date" class="form-control" id="dueDate" name="date"> <!--🟧 3. input 안에 name 을 적어주자-->
         </div>
     </div>
-    <button type="button" class="btn btn-danger ml-3">Danger</button>
+    <button type="submit" class="btn btn-danger ml-3">Submit</button> <!--무조건 type="submit" 이어야함! type="button"이면 작동X-->
 </form>
 
 <!-- Optional JavaScript; choose one of the two! -->
