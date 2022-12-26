@@ -6,14 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
 
     <title>To-do List</title>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Todo App</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -32,26 +34,31 @@
 </nav>
 <!--
 서버에서 쉽게 할일 리스트를 가져오고 싶으면 EJS 라이브러리를 쓰자!
-*EJS: HTML 을 조금더 쓰기 쉽게 도와주는 template engine(전처리 엔진) 이다!
+*EJS: EJS 는 서버 데이터를 HTML 에 쉽게쉽게 박아넣을 수 있게 도와주는
+      일종의 HTML 렌더링 엔진 혹은 template engine(전처리 엔진)이라고 부른다!
       이것 말고 PUG 도 있지만 EJS 가 쓰기에 더 쉽다고함!
       EJS simply stands for Embedded Javascript.
       It is a simple templating language/engine that lets its user generate HTML with plain javascript.
       EJS is mostly useful whenever you have to output HTML with a lot of javascript.
       *** EJS 파일은 HTML 과 똑같은데 HTML 태그 안에 내용물로 서버로 보냈던 데이터를 집어넣을 수 있다! ***
-        Ex) <h4>To-do: < %= 변수이름 % ></h4>
+        Ex) <h4>To-do: < %= 변수이름 % ></h4>   -> 이렇게 하면 HTML 글자로 렌더링됨
       만약 Vue, React, Angular 를 안다면, html 을 효과적으로 데이터 바인딩 가능!
 -->
 To-do List from Server
-<h4>To-do List <%= %></h4>
-<p>Due Date: ???</p>
-
-
+<% for(let i = 0; i < posts.length; i++) { %>
+    <h4>To-do List: <%= posts[i].todo %></h4>
+    <p>Due Date: <%= posts[i].date %></p>
+<% } %>
 
 <!-- Optional JavaScript; choose one of the two! -->
 
 <!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+        crossorigin="anonymous"></script>
 
 <!-- Option 2: Separate Popper and Bootstrap JS -->
 <!--

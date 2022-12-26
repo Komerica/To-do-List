@@ -53,7 +53,7 @@ app.get('/write', function (req, res) {
 });
 // 어떤 사람이 /add 경로로 POST 요청을 하면, ??를 해주세요!
 app.post('/add', function (req, res) {
-    res.send('Sent!');
+    res.send('Sent!');  // ← 항상 있어야함! 안그럼 데이터는 보내지긴 하지만, 사이트가 멈춤!
     console.log(req.body.toDo); // 🟧 3. 내가 방금 전달한 데이터가 console 창에 뜸! (toDo = input 에 있는 name 속성)
     console.log(req.body);      // POST 요청을 할때 form 안에 들어가 있는 정보들은 다 여기 저장됨! => { toDo: 'Coding', date: '2023-01-03' }  ← Object 자료형
     console.log(req.body.date); // 2023-01-03
@@ -69,9 +69,14 @@ app.post('/add', function (req, res) {
 //        *body-parser: input 안에 적힌 데이터를 해석할 수 있도록 도와주는 라이브러리!
 //                      이 라이브러리 없으면 req.body.toDo / req.body.date 이런거 못씀!
 
-// 🟦 2. EJS 파일 보여주기
+// 🟦 2. 서버에서 데이터를 가져와서 EJS 파일 보여주기
 app.get('/list', function (req, res) {
-    res.render('list.ejs');
+    // DB에 저장된 post 라는 collection 안의 모든 데이터를 꺼내주세요 ↓            ↓ 서버로부터 실제 가져온 데이터!
+    db.collection('post').find().toArray(function (error, result) {
+        console.log(result);             // ↓ posts 라는 key 에 결과를 다 넣음!
+        // 위에서 꺼낸 데이터를 html 태그에 박은 ejs 파일을 보여주세요
+        res.render('list.ejs', {posts: result});    // 서버로부터 데이터를 가져와서 list.ejs 에 넣음!
+    });
 });
 
 // ✔ ——DataBase—————————————————————————
