@@ -51,18 +51,32 @@ app.get('/', function (req, res) {
 app.get('/write', function (req, res) {
     res.sendFile(__dirname + '/write.html');
 });
-// 어떤 사람이 /add 경로로 POST 요청을 하면, ??를 해주세요!
+// 🟢1.어떤 사람이 form 에서 /add 경로로 POST 요청을 하면, req.body 에 form 의 내용물이 담겨옴!
 app.post('/add', function (req, res) {
     res.send('Sent!');  // ← 항상 있어야함! 안그럼 데이터는 보내지긴 하지만, 사이트가 멈춤!
     console.log(req.body.toDo); // 🟧 3. 내가 방금 전달한 데이터가 console 창에 뜸! (toDo = input 에 있는 name 속성)
     console.log(req.body);      // POST 요청을 할때 form 안에 들어가 있는 정보들은 다 여기 저장됨! => { toDo: 'Coding', date: '2023-01-03' }  ← Object 자료형
     console.log(req.body.date); // 2023-01-03
-    // 영구저장하고 싶으면 여기다가 "DB에 저장해주세요" 라고 코드짜면 됨
-    db.collection('post').insertOne({todo: req.body.toDo, date: req.body.date}, function (error, result) {
-        console.log("Saved Successfully!");
+    // 🟢2.db 안에 counter 라는 collection 안에서 "name: The number of post"를 value 값으로 가진 항목을 찾는다.
+    db.collection('counter').findOne({name: 'The number of post'}, function (error, result) {
+        console.log(result.totalPost);
+        // 🟢3.totalPost 를 key 로 가진 값을 변수 numOfPosts 에 저장해준다.
+        let numOfPosts = result.totalPost;
+        // 🟢4.db 안에 post 라는 collection 안에서 아래 항목을 추가하고, 콜백함수 console.log("Saved Successfully!"); 실행!
+        //     영구저장하고 싶으면 아래와 같이 "DB에 저장해주세요" 라고 코드짜면 됨 ↓ ↓
+        db.collection('post').insertOne({_id: numOfPosts + 1, todo: req.body.toDo, date: req.body.date}, function (error, result) {
+            console.log("Saved Successfully!");
+            // 🟢5.db 안에 counter 라는 collection 안에서 "name: The number of post"를 value 값으로 가진 항목을 찾아서 그 안의 totalPost 라는 key 를 가진 value 값을 1 증가시켜야함
+            db.collection('counter').updateOne({name: "The number of post"}, {$inc: {totalPost: 1}}, function (error, result) {
+                                            // 수정할 데이터 찾기 ↑,   그 중에서 실제로 수정할 값 ↑
+                                            // Operator ($set: 변경 / $inc: 증가 / $min: 기존값보다 적을때만 변경 / $rename: key값 이름변경)
+                if(error) return console.log(error);
+            });
+        });
     });
+
 });
-// ↑ ↑ 우리가 이제 영구 저장할 정보들(write.html 에서 적은 정보들)은 어디로 저장되는 것일까? -> 콜백함수의 req 에 들어가 있음
+// ↑ ↑ 우리가 이제 영구 저장할 정보들(list.html 에서 적은 정보들)은 어디로 저장되는 것일까? -> 콜백함수의 req 에 들어가 있음
 //     하지만 이것을 req 에서 꺼내 쓰려면 또 다른 library 가 필요! -> body-parser
 //  🟧 POST 요청으로 input 에 있는 데이터를 서버에 전송하고 싶으면..
 //     1. npm install body-parser   라이브러리 설치
@@ -70,9 +84,13 @@ app.post('/add', function (req, res) {
 //                      이 라이브러리 없으면 req.body.toDo / req.body.date 이런거 못씀!
 
 // 🟦 2. 서버에서 데이터를 가져와서 EJS 파일 보여주기
+//       1) 누군가 /list로 GET 요청을 하면
+//       2) MongoDB에서 데이터를 꺼낸 뒤에
+//       3) list.ejs 파일에 그 데이터를 꽂아넣어서 고객에게 보내줌
 app.get('/list', function (req, res) {
     // DB에 저장된 post 라는 collection 안의 모든 데이터를 꺼내주세요 ↓            ↓ 서버로부터 실제 가져온 데이터!
     db.collection('post').find().toArray(function (error, result) {
+                              // toArray: collection('post')에 있는 모든 데이터를 Array 자료형으로 가져옴
         console.log(result);             // ↓ posts 라는 key 에 결과를 다 넣음!
         // 위에서 꺼낸 데이터를 html 태그에 박은 ejs 파일을 보여주세요
         res.render('list.ejs', {posts: result});    // 서버로부터 데이터를 가져와서 list.ejs 에 넣음!
