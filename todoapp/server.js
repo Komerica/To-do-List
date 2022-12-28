@@ -96,6 +96,16 @@ app.get('/list', function (req, res) {
         res.render('list.ejs', {posts: result});    // 서버로부터 데이터를 가져와서 list.ejs 에 넣음!
     });
 });
+app.delete('/delete', function (req, res) {
+    console.log(req.body);  // AJAX 요청시 서버에 {_id: 1} 이라는 정보도 보내주세요! => But req.body 로 가져오면 {_id: '1'}문자로 받아옴!
+                                                                            // => parseInt 를 써서 숫자로 변경해줘야함
+    req.body._id = parseInt(req.body._id);
+    // ↓ req.body 에 담겨온 게시물 번호를 가진 글을 db 에서 찾아서 삭제해주세요
+    //   Ex) db.collection('post').deleteOne({_id: 2}, function () { });    // 특정 아이디가 있는 document 를 삭제하고 싶으면 이렇게!
+    db.collection('post').deleteOne(req.body, function (error, result) {
+        console.log('Deleted successfully!');
+    });
+});
 
 // ✔ ——DataBase—————————————————————————
 //   |  —collection—     ——collection—  |
