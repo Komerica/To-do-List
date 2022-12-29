@@ -96,14 +96,19 @@ app.get('/list', function (req, res) {
         res.render('list.ejs', {posts: result});    // 서버로부터 데이터를 가져와서 list.ejs 에 넣음!
     });
 });
+// 🟫 2.'list.ejs' 에서 받아온 {_id: numOfPost} 를 갖고 그에 해당하는 게시물을 삭제하기!
 app.delete('/delete', function (req, res) {
-    console.log(req.body);  // AJAX 요청시 서버에 {_id: 1} 이라는 정보도 보내주세요! => But req.body 로 가져오면 {_id: '1'}문자로 받아옴!
+    console.log(req.body);  // AJAX 요청시 서버에 {_id: 1} 이라는 정보도 보내주세요! => But req.body 로 가져오면 {_id: '1'}문자로 받아옴! (🟥list.ejs 파일에서 $.ajax 코드에서 가져옴!!)
                                                                             // => parseInt 를 써서 숫자로 변경해줘야함
     req.body._id = parseInt(req.body._id);
     // ↓ req.body 에 담겨온 게시물 번호를 가진 글을 db 에서 찾아서 삭제해주세요
     //   Ex) db.collection('post').deleteOne({_id: 2}, function () { });    // 특정 아이디가 있는 document 를 삭제하고 싶으면 이렇게!
     db.collection('post').deleteOne(req.body, function (error, result) {
-        console.log('Deleted successfully!');
+        console.log('Deleted successfully!');   // ← IDE 의 콘솔창
+        res.status(200).send({message: 'Successful!'}); // ← Response code 가 200 이라 list.ejs 안의 $.ajax 코드 안에서 무조건 .done 안에 있는 콜백함수를 실행!
+                    // ↑ https://developer.mozilla.org/en-US/docs/Web/HTTP/Status - 응답코드(Response Code)
+                    //   https://gist.github.com/sandrabosk/d125177b31eca8dc3e5c524e703ba94d - 응답코드 그림
+                    // 200: OK(요청성공)     // 400: Bad Request(고객 잘못으로 요청실패)     // 500: Internal Server Error(서버문제로 요청실패)
     });
 });
 
@@ -114,5 +119,15 @@ app.delete('/delete', function (req, res) {
 //   ————————————————————————————————————
 //   *DataBase: 하나의 폴더 (하나의 큰 데이터베이스 공간)
 //   *Collection: 하나의 엑셀 파일들!
+
+// 🔴 고객 요청에 응답하는 5가지 방법 🔴
+// app.get('/어쩌구', function(요청, 응답){
+//     응답.send('<p>some html</p>')                          // 방법1: send는 간단한 문자나 HTML을 보낼 수 있습니다.
+//     응답.status(404).send('Sorry, we cannot find that!')   // 방법2: status는 응답코드를 보낼 수 있습니다.
+//     응답.sendFile('/uploads/logo.png')                     // 방법3: sendFile은 static 파일들을 보낼 수 있습니다.
+//     응답.render('list.ejs', { ejs에 보낼 데이터 })           // 방법4: render는 ejs등의 템플릿이 적용된 페이지들을 렌더링해줄 수 있습니다.
+//     응답.json(제이슨데이터)                                  // 방법5: json은 제이슨 데이터를 담아보낼 수 있습니다.
+// });
+
 
 
