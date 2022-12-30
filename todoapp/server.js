@@ -111,6 +111,17 @@ app.delete('/delete', function (req, res) {
                     // 200: OK(요청성공)     // 400: Bad Request(고객 잘못으로 요청실패)     // 500: Internal Server Error(서버문제로 요청실패)
     });
 });
+//                ↓ ':'의 의미 -> /detail/: 뒤에 아무 문자열이나 입력하면 아래 코드를 실행시켜주세요! => 이것을 전문용어로 "URL 의 parameter" 라고 함!
+//                  여기서는 id 가 URL parameter!
+app.get('/detail/:id', function (req, res) {
+    // console.log(typeof req.params.id);   // → string
+    // 1. ↑ 어떤 사람이 detail/숫자(or 다른 문자열)로 접속을 하면, ↓ db 의 'post' 라는 collection 에서 _id 가 res.params.id(/detail/?? ← 여기 쓴 번호) 인 것을 찾아온다!
+    db.collection('post').findOne({_id: parseInt(req.params.id)}, function (error, result) {
+        console.log(result);
+        // 2. ↓ 그 결과를 detail.ejs 파일에다가 보내준다!
+        res.render('detail.ejs', {data: result});
+    });
+});
 
 // ✔ ——DataBase—————————————————————————
 //   |  —collection—     ——collection—  |
